@@ -9,7 +9,7 @@ venv/
 .env.*
 
 # Data
-data/raw/
+data/
 checkpoints/
 results/images/
 
