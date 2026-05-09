@@ -11,7 +11,6 @@ venv/
 # Data
 data/
 checkpoints/
-results/images/
 
 # Jupyter
 .ipynb_checkpoints/

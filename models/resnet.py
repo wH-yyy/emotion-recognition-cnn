@@ -31,7 +31,7 @@ if __name__ == '__main__':
     print(f"Output classes: {model.fc.out_features}")
 
     # 测试前向传播
-    x = torch.randn(1, 3, 224, 224)
+    x = torch.randn(1, 3, 128, 128)
     output = model(x)
     print(f"Input shape: {x.shape}")
     print(f"Output shape: {output.shape}")
