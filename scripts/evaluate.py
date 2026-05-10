@@ -114,10 +114,15 @@ def plot_confusion_matrix(cm, class_names, save_path):
 def main():
     parser = argparse.ArgumentParser(description='评估情绪识别模型')
     parser.add_argument(
+        '--model',
+        type=str,
+        choices=['resnet', 'mobilenet'],
+        help='模型名称（用于自动查找检查点）'
+    )
+    parser.add_argument(
         '--checkpoint',
         type=str,
-        default='checkpoints/best_model.pth',
-        help='模型检查点路径'
+        help='模型检查点路径（优先）'
     )
     parser.add_argument(
         '--data_root',
@@ -146,6 +151,13 @@ def main():
     
     args = parser.parse_args()
     
+    # 自动根据模型选择默认 checkpoint 路径
+    if args.checkpoint is None:
+        if args.model is None:
+            print("错误: 请指定 --checkpoint 或 --model")
+            return
+        args.checkpoint = f'checkpoints/{args.model}/best_model.pth'
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
     

@@ -170,7 +170,9 @@ class Trainer:
         }
 
         if is_best:
-            save_path = self.checkpoint_dir / 'best_model.pth'
+            model_name = self.config['model']
+            save_path = self.checkpoint_dir / model_name / 'best_model.pth'
+            save_path.parent.mkdir(parents=True, exist_ok=True)
         else:
             save_path = self.checkpoint_dir / 'latest_model.pth'
 
@@ -256,7 +258,9 @@ class Trainer:
         self.plot_curves()
 
         # 保存训练历史
-        history_path = self.checkpoint_dir / 'history.json'
+        model_name = self.config['model']
+        history_path = self.checkpoint_dir / model_name / 'history.json'
+        history_path.parent.mkdir(parents=True, exist_ok=True)
         with open(history_path, 'w') as f:
             json.dump(self.history, f, indent=4)
         print(f"History saved to {history_path}")

@@ -87,10 +87,15 @@ def main():
         help='输入图片路径'
     )
     parser.add_argument(
+        '--model',
+        type=str,
+        choices=['resnet', 'mobilenet'],
+        help='模型名称（用于自动查找检查点）'
+    )
+    parser.add_argument(
         '--checkpoint',
         type=str,
-        default='checkpoints/best_model.pth',
-        help='模型检查点路径'
+        help='模型检查点路径（优先）'
     )
     parser.add_argument(
         '--show_all_probs',
@@ -100,6 +105,12 @@ def main():
     
     args = parser.parse_args()
     
+    if args.checkpoint is None:
+        if args.model is None:
+            print("错误: 请指定 --checkpoint 或 --model")
+            return
+        args.checkpoint = f'checkpoints/{args.model}/best_model.pth'
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
     

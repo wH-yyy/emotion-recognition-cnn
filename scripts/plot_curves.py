@@ -128,8 +128,13 @@ def main():
     parser.add_argument(
         '--history',
         type=str,
-        default='checkpoints/history.json',
-        help='训练历史 JSON 文件路径'
+        help='训练历史 JSON 文件路径（可选，会自动根据模型查找）'
+    )
+    parser.add_argument(
+        '--model',
+        type=str,
+        choices=['resnet', 'mobilenet'],
+        help='模型名称（用于自动查找历史文件）'
     )
     parser.add_argument(
         '--output_dir',
@@ -145,7 +150,29 @@ def main():
     
     args = parser.parse_args()
     
-    history_path = Path(args.history)
+    # 自动确定历史文件路径
+    if args.history:
+        history_path = Path(args.history)
+    elif args.model:
+        history_path = Path(f'checkpoints/{args.model}/history.json')
+    else:
+        # 尝试查找最新的历史文件
+        possible_paths = [
+            Path('checkpoints/resnet/history.json'),
+            Path('checkpoints/mobilenet/history.json'),
+            Path('checkpoints/history.json')  # 向后兼容
+        ]
+        history_path = None
+        for path in possible_paths:
+            if path.exists():
+                history_path = path
+                print(f"Found history file: {path}")
+                break
+        
+        if history_path is None:
+            print("错误: 未找到历史文件。请指定 --history 或 --model 参数")
+            return
+    
     output_dir = Path(args.output_dir)
     
     # 检查历史文件是否存在
