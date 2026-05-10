@@ -5,30 +5,7 @@ from typing import Callable, Optional, List, Tuple
 from PIL import Image
 import torch
 from torch.utils.data import Dataset
-from torchvision import transforms
-
-
-def get_transform(mode: str = 'train') -> transforms.Compose:
-    """返回图像预处理变换，train/val 共用 resize + normalize。"""
-    if mode not in ['train', 'val']:
-        raise ValueError("mode must be 'train' or 'val'")
-
-    transform_list = [
-        transforms.Resize((128, 128)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ]
-
-    if mode == 'train':
-        transform_list = [
-            transforms.Resize((128, 128)),
-            transforms.RandomHorizontalFlip(p=0.5),
-            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ]
-
-    return transforms.Compose(transform_list)
+from utils.transforms import get_train_transforms, get_val_transforms
 
 
 class FER2013Dataset(Dataset):
@@ -41,8 +18,7 @@ class FER2013Dataset(Dataset):
         transform: Optional[Callable] = None,
     ) -> None:
         """
-        Args:
-            root: 数据集根目录，例如 data/processed
+            root: 数据集根目录(data/processed)
             mode: 数据模式，'train' 或 'val'
             transform: 可选的 torchvision.transforms 组合
         """
@@ -51,7 +27,9 @@ class FER2013Dataset(Dataset):
 
         self.root = Path(root)
         self.mode = mode
-        self.transform = transform if transform is not None else get_transform(mode)
+        self.transform = transform if transform is not None else (
+            get_train_transforms() if mode == 'train' else get_val_transforms()
+        )
         self.images: List[Path] = []
         self.labels: List[int] = []
 
