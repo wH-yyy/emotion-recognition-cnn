@@ -1,4 +1,3 @@
-import os
 import argparse
 import json
 from pathlib import Path
@@ -16,8 +15,6 @@ from models import get_resnet_model, get_mobilenet_model
 
 
 class Trainer:
-    """情绪识别模型训练器"""
-
     def __init__(self, config):
         self.config = config
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -274,13 +271,13 @@ def main():
                         help='数据集根目录')
     parser.add_argument('--checkpoint_dir', type=str, default='checkpoints',
                         help='模型保存目录')
-    parser.add_argument('--epochs', type=int, default=30,
+    parser.add_argument('--epochs', type=int, default=20,
                         help='训练轮数')
-    parser.add_argument('--batch_size', type=int, default=64,
+    parser.add_argument('--batch_size', type=int, default=32,
                         help='批次大小')
-    parser.add_argument('--learning_rate', type=float, default=1e-3,
+    parser.add_argument('--learning_rate', type=float, default=3e-4,
                         help='学习率')
-    parser.add_argument('--weight_decay', type=float, default=1e-4,
+    parser.add_argument('--weight_decay', type=float, default=5e-4,
                         help='权重衰减')
     parser.add_argument('--use_scheduler', action='store_true',
                         help='是否使用学习率调度器')

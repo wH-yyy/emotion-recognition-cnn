@@ -133,7 +133,7 @@ def main():
     parser.add_argument(
         '--batch_size',
         type=int,
-        default=64,
+        default=32,
         help='批次大小'
     )
     parser.add_argument(
