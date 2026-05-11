@@ -240,7 +240,7 @@ def main():
                         help='数据集根目录')
     parser.add_argument('--checkpoint_dir', type=str, default='checkpoints',
                         help='模型保存目录')
-    parser.add_argument('--epochs', type=int, default=1,
+    parser.add_argument('--epochs', type=int, default=20,
                         help='训练轮数')
     parser.add_argument('--batch_size', type=int, default=32,
                         help='批次大小')
