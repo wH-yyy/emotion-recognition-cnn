@@ -216,7 +216,7 @@ def create_interface(available_models: list):
 
         with gr.Row(equal_height=True):
             with gr.Column(scale=1):
-                image_input = gr.Image(type="pil", label="Input Image")
+                image_input = gr.Image(type="pil", label="Input Image", sources=["upload"])
 
             with gr.Column(scale=1):
                 emotion_output = gr.Label(label="Prediction", num_top_classes=7)
