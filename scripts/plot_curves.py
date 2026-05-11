@@ -156,11 +156,10 @@ def main():
     elif args.model:
         history_path = Path(f'checkpoints/{args.model}/history.json')
     else:
-        # 尝试查找最新的历史文件
         possible_paths = [
             Path('checkpoints/resnet/history.json'),
             Path('checkpoints/mobilenet/history.json'),
-            Path('checkpoints/history.json')  # 向后兼容
+            Path('checkpoints/history.json')
         ]
         history_path = None
         for path in possible_paths:
@@ -168,12 +167,20 @@ def main():
                 history_path = path
                 print(f"Found history file: {path}")
                 break
-        
+
         if history_path is None:
             print("错误: 未找到历史文件。请指定 --history 或 --model 参数")
             return
-    
+
+    # 推断模型名称，用于按模型分目录保存结果
+    if args.model:
+        model_name = args.model
+    else:
+        model_name = history_path.parent.name
+
     output_dir = Path(args.output_dir)
+    if args.output_dir == 'results/curves':
+        output_dir = output_dir / model_name
     
     # 检查历史文件是否存在
     if not history_path.exists():

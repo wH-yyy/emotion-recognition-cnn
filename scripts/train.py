@@ -7,7 +7,8 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-import matplotlib.pyplot as plt
+
+from scripts.plot_curves import plot_combined_curve
 
 from utils.dataset import FER2013Dataset
 from utils.transforms import get_train_transforms, get_val_transforms
@@ -166,12 +167,12 @@ class Trainer:
             'history': self.history,
         }
 
+        model_name = self.config['model']
         if is_best:
-            model_name = self.config['model']
             save_path = self.checkpoint_dir / model_name / 'best_model.pth'
-            save_path.parent.mkdir(parents=True, exist_ok=True)
         else:
-            save_path = self.checkpoint_dir / 'latest_model.pth'
+            save_path = self.checkpoint_dir / model_name / 'latest_model.pth'
+        save_path.parent.mkdir(parents=True, exist_ok=True)
 
         torch.save(checkpoint, save_path)
         print(f"Model saved to {save_path}")
@@ -183,39 +184,6 @@ class Trainer:
         self.optimizer.load_state_dict(checkpoint['optimizer'])
         self.history = checkpoint['history']
         print(f"Model loaded from {checkpoint_path}")
-
-    def plot_curves(self):
-        """绘制训练曲线"""
-        epochs = range(1, len(self.history['train_loss']) + 1)
-
-        # Loss 曲线
-        plt.figure(figsize=(12, 4))
-
-        plt.subplot(1, 2, 1)
-        plt.plot(epochs, self.history['train_loss'], 'b-', label='Train')
-        plt.plot(epochs, self.history['val_loss'], 'r-', label='Val')
-        plt.xlabel('Epoch')
-        plt.ylabel('Loss')
-        plt.title('Loss Curves')
-        plt.legend()
-        plt.grid(True)
-
-        # Accuracy 曲线
-        plt.subplot(1, 2, 2)
-        plt.plot(epochs, self.history['train_acc'], 'b-', label='Train')
-        plt.plot(epochs, self.history['val_acc'], 'r-', label='Val')
-        plt.xlabel('Epoch')
-        plt.ylabel('Accuracy')
-        plt.title('Accuracy Curves')
-        plt.legend()
-        plt.grid(True)
-
-        plt.tight_layout()
-        save_path = self.checkpoint_dir.parent / 'results' / 'curves' / 'training_curves.png'
-        save_path.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(save_path)
-        print(f"Curves saved to {save_path}")
-        plt.close()
 
     def train(self):
         """完整训练过程"""
@@ -252,10 +220,11 @@ class Trainer:
             self.save_checkpoint(is_best=False)
 
         # 绘制曲线
-        self.plot_curves()
+        model_name = self.config['model']
+        curves_path = self.checkpoint_dir.parent / 'results' / 'curves' / model_name / 'training_curves.png'
+        plot_combined_curve(self.history, curves_path)
 
         # 保存训练历史
-        model_name = self.config['model']
         history_path = self.checkpoint_dir / model_name / 'history.json'
         history_path.parent.mkdir(parents=True, exist_ok=True)
         with open(history_path, 'w') as f:
@@ -271,7 +240,7 @@ def main():
                         help='数据集根目录')
     parser.add_argument('--checkpoint_dir', type=str, default='checkpoints',
                         help='模型保存目录')
-    parser.add_argument('--epochs', type=int, default=20,
+    parser.add_argument('--epochs', type=int, default=1,
                         help='训练轮数')
     parser.add_argument('--batch_size', type=int, default=32,
                         help='批次大小')

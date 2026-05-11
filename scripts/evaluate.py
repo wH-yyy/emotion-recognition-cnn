@@ -216,7 +216,10 @@ def main():
     print(classification_report(labels, predictions, target_names=class_names, zero_division=0))
     
     # 绘制混淆矩阵
+    model_name = config['model']
     output_dir = Path(args.output_dir)
+    if args.output_dir == 'results/tables':
+        output_dir = output_dir / model_name
     output_dir.mkdir(parents=True, exist_ok=True)
     
     cm_path = output_dir / 'confusion_matrix.png'
