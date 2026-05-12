@@ -77,7 +77,7 @@ python scripts/train.py --model mobilenet --epochs 20 --batch_size 32
 
 #### MobileNetV2 模型
 
-| 情绪类别 | 精确率 | 召回率 | F1 分数 | 支持样本数 |
+| 情绪类别 | Precision | Recall | F1 Score | 支持样本数 |
 |----------|--------|--------|---------|------------|
 | angry | 0.58 | 0.63 | 0.60 | 467 |
 | disgust | 0.68 | 0.48 | 0.56 | 56 |
