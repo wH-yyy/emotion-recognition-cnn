@@ -55,7 +55,7 @@ python scripts/train.py --model mobilenet --epochs 20 --batch_size 32
 ### 性能对比
 
 | 模型 | Accuracy | Precision | Recall | F1 Score |
-|------|-----------|--------|--------|---------|--------|---------------|
+|------|-----------|--------|--------|---------|
 | ResNet18 | 65.45% | 65.07% | 65.45% | 65.21% |
 | MobileNetV2 | 66.04% | 66.29% | 66.04% | 65.64% |
 
@@ -112,9 +112,7 @@ pip install -r requirements.txt
 
 ### 完整流程
 
-1. **数据集下载**：
-
-从[魔搭社区](https://www.modelscope.cn/datasets/ly261666/Fer2013/files)下载 FER2013 数据集并放置在 `data/raw/fer2013.csv`
+1. **数据集下载**：从[魔搭社区](https://www.modelscope.cn/datasets/ly261666/Fer2013/files)下载 FER2013 数据集并放置在 `data/raw/fer2013.csv`
 
 1. **数据转换**:
    ```bash
